@@ -1,0 +1,21 @@
+﻿    .head-sec i {
+        color:#0094ff;
+    }
+.domain-sale-div {
+       background-color: #FF0000;
+        box-shadow: 0 0 0 4px #FF0000, 2px 1px 6px 4px #FF0000;
+        -webkit-box-shadow:0 0 0 4px #FF0000, 2px 1px 6px 4px #FF0000;
+        -moz-box-shadow:0 0 0 4px #FF0000, 2px 1px 6px 4px #FF0000;               
+}
+.sale-price-div {
+     border: 10px solid #0094ff; 
+     background-color: #fff; 
+             color: #000; 
+
+}
+
+
+
+.right-sec {
+    background-color:#6da5b7;
+}
