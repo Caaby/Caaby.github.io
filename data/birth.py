@@ -85,8 +85,8 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     alarm_conf.add('X-WR-ALARMUID', str(uuid.uuid4())) # noqa
     alarm_conf.add('UID', str(uuid.uuid4()))
     alarm_conf.add("TRIGGER", timedelta(days=-1))
-    alarm_conf.add("TRIGGER", timedelta(days=-2))
-#     alarm_conf.add("TRIGGER;RELATED=START", "PT9H")
+    # alarm_conf.add("TRIGGER", timedelta(days=-2))
+    # alarm_conf.add("TRIGGER;RELATED=START", "PT9H")
     # alarm_conf.add("TRIGGER;RELATED=START", "-PT{0}M".format(10))
 
     event_conf.add_component(alarm_conf)
