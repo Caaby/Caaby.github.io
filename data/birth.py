@@ -68,7 +68,7 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf['DESCRIPTION'] = f"{name}{anniversary}周岁的生日" if anniversary else f"{name}的生日"  # 详情描述
     event_conf['CATEGORIES'] = "聖日"
     event_conf['X-APPLE-UNIVERSAL-ID'] = str(uuid.uuid4())
-    event_conf.add('RRULE',  {'FREQ': 'YEARLY', 'COUNT': 5})
+    # event_conf.add('RRULE',  {'FREQ': 'YEARLY', 'COUNT': 5})
 
     # 闹钟设置，默认为无闹钟
     # alarm_conf = Alarm()
