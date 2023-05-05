@@ -15,6 +15,11 @@ jobs:
         python -m pip install --upgrade pip && pip install icalendar==4.1.0 toml==0.10.2 zhdate
         cd data && python birth.py
         
+    - name: update local file
+      env:
+       BIRTH_CONG_TOML_URL: ${{vars.BIRTH_CONG_TOML_URL}}
+      run: cd data && python birth.py
+       
     - name: Auto commit
       run: |
           git config --local user.email "action@github.com"
