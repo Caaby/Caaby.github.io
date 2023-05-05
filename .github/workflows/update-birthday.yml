@@ -16,7 +16,7 @@ jobs:
         
     - name: update local file
       env:
-       BIRTH_CONG_TOML_URL: ${{vars.BIRTH_CONG_TOML_URL}}
+       BIRTH_CONG_TOML_URL: ${{secrets.BIRTH_CONG_TOML_URL}}
       run: cd data && python birth.py
        
     - name: Auto commit
