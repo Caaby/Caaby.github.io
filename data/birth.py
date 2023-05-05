@@ -3,6 +3,10 @@ from datetime import datetime
 import uuid
 from zhdate import ZhDate
 import toml
+import requests
+import os
+from io import StringIO
+
 
 """
 BEGIN:VCALENDAR									# 日历开始
@@ -130,9 +134,13 @@ def add_calendar(conf_dict: dict):
 
 if __name__ == '__main__':
     """
-    pip install icalendar==4.1.0 toml=0.10.2 zhdate
+    pip install icalendar==4.1.0 toml=0.10.2 requests==2.27.1 zhdate
     """
+    url = os.getenv("BIRTH_CONG_TOML_URL")
+    if not url:
+        exit(1)
 
-    file_path = "./birth.toml"
-    conf = toml.load(file_path)
+    resp = requests.get(url)
+    resp.raise_for_status()
+    conf = toml.load(f=StringIO(resp.text))
     add_calendar(conf)
