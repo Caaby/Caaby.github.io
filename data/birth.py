@@ -65,7 +65,7 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     # 事件名
     event_conf['SUMMARY;LANGUAGE=zh_CN'] = f"{name}生日"  # 事件名
     event_conf['TRANSP'] ="TRANSPARENT"  # noqa
-    event_conf['DESCRIPTION'] = f"{name}{anniversary}周岁的生日" if anniversary else f"{name}的生日"  # 详情描述
+    event_conf['DESCRIPTION'] = f"{name}{anniversary}周岁生日" if anniversary else f"{name}生日"  # 详情描述
     event_conf['CATEGORIES'] = "聖日"
     event_conf['X-APPLE-UNIVERSAL-ID'] = str(uuid.uuid4())
     # event_conf.add('RRULE',  {'FREQ': 'YEARLY', 'COUNT': 5})
