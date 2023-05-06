@@ -1,0 +1,23 @@
+name: update gift.ics
+on:
+  workflow_dispatch:
+  schedule:
+    - cron:  '1 2 1 1 *'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - run: python -m pip install --upgrade pip && pip install icalendar toml zhdate && cd data && python gift.py       
+    - name: Auto commit
+      run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actio"
+          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+          # git pull --rebase
+          git add .
+          git commit --allow-empty -am "change gift.ics"
+          git push
