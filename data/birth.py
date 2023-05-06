@@ -101,7 +101,7 @@ def add_calendar(conf_dict: dict):
     cal.add('X-WR-CALNAME', conf_dict.get("title"))  # noqa
     cal.add('X-APPLE-LANGUAGE', 'zh')  # noqa
     cal.add('X-APPLE-REGION', 'CN')  # noqa
-    cal.add('X-APPLE-CALENDAR-COLOR', '#708090')
+    # cal.add('X-APPLE-CALENDAR-COLOR', '#708090')
     cal.add('X-WR-TIMEZONE', 'Asia/Shanghai')
 
     data_list = conf_dict.get('birthday')
