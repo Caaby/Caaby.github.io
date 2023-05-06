@@ -1,0 +1,29 @@
+title = "gift"
+
+[[gregorian]]
+name = "情人节"
+date = "02-14"
+
+[[gregorian]]
+name = "白色情人节"
+date = "03-14"
+
+[[gregorian]]
+name = "妇女节"
+date = "03-08"
+
+[[gregorian]]
+name = "表白节"
+date = "05-20"
+
+[[gregorian]]
+name = "平安夜"
+date = "12-24"
+
+[[gregorian]]
+name = "圣诞节"
+date = "12-25"
+
+[[lunar]]
+name = "七夕节"
+date = "07-07"
