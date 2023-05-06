@@ -4,9 +4,15 @@ import uuid
 import calendar
 
 
+def option_expiration(year, month):
+    """获取year-month的第三个周五"""
+    day = 21 - (calendar.weekday(year, month, 1) + 2) % 7
+    return date(year, month, day).strftime("%Y%m%d")
+
+
 def add_event_conf(year, month):  # 事件函数
     date_str = option_expiration(year, month)
-
+    
     event_conf = Event()
     # 当前时间
     event_conf['DTSTAMP;VALUE=DATE'] = date_str  # noqa
@@ -16,7 +22,7 @@ def add_event_conf(year, month):  # 事件函数
     event_conf['CLASS'] = 'PRIVATE'  # 保密类型 PRIVATE私有 PUBLIC公开
     event_conf['X-APPLE-TRAVEL-ADVISORY-BEHAVIOR'] = 'AUTOMATIC'
     # 事件名
-    event_conf['SUMMARY;LANGUAGE=zh_CN'] = f"{year}年{month}月股指期货交割日"  # 事件名
+    event_conf['SUMMARY;LANGUAGE=zh_CN'] = f"{month}月股指期货交割日"  # 事件名
     event_conf['TRANSP'] ="TRANSPARENT"  # noqa
     event_conf['DESCRIPTION'] = f"{year}年{month}月股指期货交割日"  # 详情描述
     event_conf['CATEGORIES'] = "交割日"
@@ -33,12 +39,6 @@ def add_event_conf(year, month):  # 事件函数
     return event_conf
 
 
-def option_expiration(year, month):
-    """获取year-month的第三个周五"""
-    day = 21 - (calendar.weekday(year, month, 1) + 2) % 7
-    return date(year, month, day).strftime("%Y%m%d")
-
-
 def add_calendar():
     cal = Calendar()
     cal.add('VERSION', '2.0')
@@ -52,8 +52,7 @@ def add_calendar():
 
     for y in range(date.today().year, date.today().year + 3):
         for m in range(1, 13):
-            event = add_event_conf(y, m)
-            cal.add_component(event)
+            cal.add_component(add_event_conf(y, m))
 
     with open('delivery_date.ics', 'wb') as f:
         f.write(cal.to_ical())
@@ -61,6 +60,6 @@ def add_calendar():
 
 if __name__ == '__main__':
     """
-    pip install icalendar==4.1.0
+    pip install icalendar
     """
     add_calendar()
