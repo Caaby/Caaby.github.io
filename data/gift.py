@@ -45,8 +45,8 @@ def add_calendar(conf_dict: dict):
     cal.add('X-APPLE-REGION', 'CN')  # noqa
     cal.add('X-WR-TIMEZONE', 'Asia/Shanghai')
 
-    gregorian = conf_dict.get('gregorian')
-    lunar = conf_dict.get('lunar')
+    gregorian = conf_dict.get('gregorian',[])
+    lunar = conf_dict.get('lunar', [])
 
     year = datetime.today().year
     for data in gregorian:
