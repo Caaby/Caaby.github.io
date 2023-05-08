@@ -29,6 +29,7 @@ def add_event_conf(name, start_date, anniversary, gregorian: bool):  # 事件函
     alarm_conf.add('X-WR-ALARMUID', str(uuid.uuid4())) # noqa
     alarm_conf.add('UID', str(uuid.uuid4()))
     alarm_conf.add("TRIGGER", timedelta(weeks=-1, hours=9))
+    alarm_conf.add("DESCRIPTION", f"{anniversary}年{name}" if anniversary else name)
 
     event_conf.add_component(alarm_conf)
     return event_conf
