@@ -33,7 +33,8 @@ def add_event_conf(year, month):  # 事件函数
     alarm_conf.add('ACTION', 'DISPLAY')  # AUDIO 音频
     alarm_conf.add('X-WR-ALARMUID', str(uuid.uuid4())) # noqa
     alarm_conf.add('UID', str(uuid.uuid4()))
-    alarm_conf.add("TRIGGER", timedelta(hours=-9))
+    alarm_conf.add("TRIGGER", timedelta(hours=-15))
+    alarm_conf.add("DESCRIPTION", f"{date_str}股指期货交割日")
 
     event_conf.add_component(alarm_conf)
     return event_conf
