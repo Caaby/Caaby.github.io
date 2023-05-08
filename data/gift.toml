@@ -8,9 +8,9 @@ date = "02-14"
 name = "白色情人节"
 date = "03-14"
 
-[[gregorian]]
-name = "妇女节"
-date = "03-08"
+# [[gregorian]]
+# name = "妇女节"
+# date = "03-08"
 
 [[gregorian]]
 name = "表白节"
@@ -24,6 +24,6 @@ date = "12-24"
 name = "圣诞节"
 date = "12-25"
 
-[[lunar]]
-name = "七夕节"
-date = "07-07"
+# [[lunar]]
+# name = "七夕节"
+# date = "07-07"
