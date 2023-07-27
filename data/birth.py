@@ -63,6 +63,7 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     """
 
     event_conf['UID'] = str(uuid.uuid4())
+    event_conf.add('UID', vText(uuid.uuid4()))
     """唯一标识"""
 
     event_conf.add('dtstart', vDate(start_date))  # noqa
@@ -153,7 +154,7 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     alarm2.add('description', vText('明天{}'.format(description)))
 
     alarm3.add('action', 'DISPLAY')
-    alarm3.add('trigger', start_date + timedelta(hours=9))
+    alarm3.add('trigger', vDatetime(start_date + timedelta(hours=9)))
     alarm3.add('description', vText('今天{}'.format(description)))
 
     event_conf.add_component(alarm)
@@ -166,15 +167,15 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
 def add_calendar(conf_dict: dict):
     cal = Calendar()
     cal.add('VERSION', '2.0')
-    cal.add('PROID', '-//My Calendar//caaby.com//')     # noqa
-    cal.add('CALSCALE', 'GREGORIAN')                    # noqa
+    cal.add('PROID', vText('caaby.com'))                    # noqa
+    cal.add('CALSCALE', vText('GREGORIAN'))                 # noqa
     """ GREGORIAN：表示使用公历。
         其他自定义取值：表示使用其他类型的日历系统。
     """
-    cal.add('X-WR-CALNAME', conf_dict.get("title"))     # noqa
-    cal.add('X-APPLE-LANGUAGE', 'zh')                   # noqa
-    cal.add('X-APPLE-REGION', 'CN')                     # noqa
-    cal.add('X-WR-TIMEZONE', 'Asia/Shanghai')
+    cal.add('X-WR-CALNAME', vText(conf_dict.get("title")))  # noqa
+    cal.add('X-APPLE-LANGUAGE', vText('zh'))                # noqa
+    cal.add('X-APPLE-REGION', vText('CN'))                  # noqa
+    cal.add('X-WR-TIMEZONE', vText('Asia/Shanghai'))
 
     data_list = conf_dict.get('birthday')
 
@@ -202,7 +203,7 @@ def add_calendar(conf_dict: dict):
             event = add_event_conf(name, tz.localize(start_date), anniversary)
             cal.add_component(event)
 
-    with open('birthday.ics', 'wb') as f:
+    with open('../calendars/birthday.ics', 'wb') as f:
         f.write(cal.to_ical())
 
 
