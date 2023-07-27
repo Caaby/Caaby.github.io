@@ -40,7 +40,6 @@ def put_object(key, data):
         'x-oss-forbid-overwrite': 'false',
         'Content-Type': 'text/plain; charset=utf-8',
         'Content-Encoding': 'gzip',
-        'Transfer-Encoding': 'chunked',
         'Content-Disposition': "attachment; filename={}".format(key)
     }
     bucket.put_object(key, data, headers=headers)
