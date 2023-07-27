@@ -7,6 +7,8 @@ except ImportError:
     subprocess.call(['pip', 'install', 'oss2'])
     import oss2
 
+__all__ = ('put_object',)
+
 access_key_id = os.getenv('OSS_ACCESS_KEY_ID')
 access_key_secret = os.getenv('OSS_ACCESS_KEY_SECRET')
 bucket_name = os.getenv('OSS_BUCKET_NAME')
