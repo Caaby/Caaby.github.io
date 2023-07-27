@@ -38,7 +38,8 @@ def put_object(key, data):
     # 将 x-oss-forbid-overwrite 属性设置为 false，以覆盖已经存在的文件
     headers = {
         'x-oss-forbid-overwrite': 'false',
-        'Content-Type': 'text/plain'
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Content-Disposition': "attachment; filename={}".format(key)
     }
     bucket.put_object(key, data, headers=headers)
 
