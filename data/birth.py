@@ -1,12 +1,12 @@
-from icalendar import Calendar, Event, Alarm
-from datetime import datetime,timedelta
+from icalendar import Calendar, Event, Alarm, vDatetime, vDate, vText
+from datetime import datetime, timedelta
 import uuid
 from zhdate import ZhDate
 import toml
 import requests
 import os
 from io import StringIO
-
+from pytz import timezone
 
 """
 BEGIN:VCALENDAR									# 日历开始
@@ -48,61 +48,132 @@ END:VCALENDAR									# 日历结束
 
 """
 
+# 创建时区对象，表示东八区（北京时间）
+tz = timezone('Asia/Shanghai')
+
 
 def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf = Event()
-    # 当前时间
-    # 时间戳 属性时表示实例创建时间，没有时表示最后修订的日期时间
-    event_conf['DTSTAMP;VALUE=DATE'] = 19760401  # noqa
-    event_conf['UID'] = str(uuid.uuid4())  # 唯一标识
-    # 开始时间
-    event_conf['DTSTART;VALUE=DATE'] = start_date.strftime("%Y%m%d")  # noqa
-    event_conf['CLASS'] = 'PRIVATE'  # 保密类型 PRIVATE私有 PUBLIC公开
-    # 结束时间
-    # noqa event_conf['DTEND;VALUE=DATE'] = (start_date + timedelta(days=1)).strftime("%Y%m%d")
-    # noqa event_conf.add('X-ALLDAY', 1)  # noqa  是否是全天事件
-    event_conf['X-APPLE-TRAVEL-ADVISORY-BEHAVIOR'] = 'AUTOMATIC'
-    # 事件名
-    event_conf['SUMMARY;LANGUAGE=zh_CN'] = f"{name}生日"  # 事件名
-    event_conf['TRANSP'] ="TRANSPARENT"  # noqa
-    event_conf['DESCRIPTION'] = f"{name}{anniversary}周岁生日" if anniversary else f"{name}生日"  # 详情描述
-    event_conf['CATEGORIES'] = "聖日"
+    event_conf.add('dtstamp', vDatetime(datetime.now(tz)))
+    """ DTSTAMP 是 icalendar 中一个标准的属性（Property），用于指示事件的创建或最后修改时间。
+
+        该属性表示一个日期时间值，用于指示事件的创建或最后修改时间。具体含义如下：
+            对于新创建的事件，DTSTAMP 属性应该表示该事件的创建时间。
+            对于已经存在的事件，DTSTAMP 属性应该表示该事件的最后修改时间。
+    """
+
+    event_conf['UID'] = str(uuid.uuid4())
+    """唯一标识"""
+
+    event_conf.add('dtstart', vDate(start_date))  # noqa
+    """开始时间
+        vDate 表示日期事件
+        vDatetime 表示时间事件
+    """
+
+    event_conf.add('dtend', vDate(start_date + timedelta(days=1)))  # noqa
+    """结束时间"""
+
+    event_conf.add('class', vText('PRIVATE'))
+    """CLASS 是 icalendar 中一个标准的属性（Property），用于指示事件的保密级别或重要性。
+        该属性表示一个字符串值，用于指示事件的保密级别或重要性。具体取值及含义如下：
+            PUBLIC：表示事件是公开的，任何人都可以查看。
+            PRIVATE：表示事件是私有的，只有组织者和邀请的参与者可以查看。
+            CONFIDENTIAL：表示事件是保密的，只有组织者和邀请的参与者可以查看，并且应该采取特殊措施保护隐私。
+        除了上述标准取值外，CLASS 属性还可以使用其他自定义取值，以便满足特定应用的需求。
+    """
+
+    event_conf.add('x-allday', 'TRUE')  # noqa
+    """ X-ALLDAY 是 icalendar 中一个非标准的属性（Non-Standard Property），通常用于指示事件是否是全天事件。
+        全天事件是一种不需要指定具体时间的事件，通常用于表示整天的节日或假期等。在 icalendar 标准中，全天事件的开始时间和结束时间应该分别设置为当天的起始时间和结束时间。而 X-ALLDAY 属性则可以用于更方便地指示事件是否是全天事件。
+        
+        该属性表示一个布尔值，用于指示事件是否是全天事件。具体取值及含义如下：
+            TRUE：表示事件是全天事件。
+            FALSE：表示事件不是全天事件。
+    """
+
+    event_conf['X-APPLE-TRAVEL-ADVISORY-BEHAVIOR'] = 'CALCULATED'
+    """ X-APPLE-TRAVEL-ADVISORY-BEHAVIOR 是 icalendar 中一个非标准的属性（Non-Standard Property），
+        通常用于在 Apple 设备上指示旅行事件的行为。
+
+        该属性表示一个字符串值，用于指示旅行事件的行为。具体取值及含义如下：
+            AUTOMATIC：表示自动更新旅行建议，即根据当前位置和交通方式自动计算旅行时间。
+            CONFIRMED：表示旅行时间已确认，不需要更新旅行建议。
+            CALCULATED：表示已手动计算旅行时间，不需要更新旅行建议。
+
+    """
+    event_conf.add('SUMMARY', vText(f"{name}生日"))  # 事件名
+    """用于指示事件的摘要或标题。
+    """
+
+    event_conf.add('TRANSP', vText('OPAQUE')) # noqa
+    """ 在icalendar标准中，TRANSP是一个事件属性（EventProperty），用于指示事件的可见性，即指示事件是否应该在日历中显示。
+    
+        TRANSP属性包含以下取值：
+            TRANSPARENT：表示事件是透明的，即事件的时间段应该被忽略，不应该在日历中显示。
+            这通常用于表示非工作时间或其他不需要显示在日历中的时间段。
+            
+        OPAQUE：表示事件是不透明的，即事件的时间段应该被显示在日历中。这是TRANSP属性的默认取值。
+    """
+    description = f"{name}{anniversary}周岁生日" if anniversary else f"{name}生日"  # 详情描述
+    event_conf.add('description', vText(description))
+
+    event_conf['CATEGORIES'] = ["生日", ]
+    """ CATEGORIES 是一个事件属性（Event Property）用于指示事件所属的类别或标签
+    """
+
     event_conf['X-APPLE-UNIVERSAL-ID'] = str(uuid.uuid4())
-    # event_conf.add('RRULE',  {'FREQ': 'YEARLY', 'COUNT': 5})
+    """ X-APPLE-UNIVERSAL-ID 是 icalendar 中一个非标准的属性（Non-Standard Property），
+        通常用于在 Apple 设备上对事件进行标识和同步。
+        该属性表示一个字符串值，用于唯一标识一个事件。该属性通常用于在同步事件时进行匹配，以便在多个设备之间保持事件的同步状态。
+    """
 
-    # 闹钟设置，默认为无闹钟
-    # alarm_conf = Alarm()
-    # alarm_conf.add('ACTION', 'NONE')
-    # alarm_conf.add('TRIGGER;VALUE=DATE-TIME', '19760401T005545Z')
-    # 10分钟
-    # alarm_conf.add('ACTION', 'DISPLAY')
-    # alarm_conf.add("TRIGGER;RELATED=START", "-PT{0}M".format(10))
-    # event_conf.add_component(alarm_conf)
+    """ 设置组织者信息
+    organizer = vCalAddress('MAILTO:noreply@example.com')
+    organizer.params['cn'] = vText(name)
+    event_conf.add('organizer', organizer)
+    """
 
-    # 闹钟设置
-    alarm_conf = Alarm()
-    alarm_conf.add('ACTION', 'DISPLAY')  # AUDIO 音频
-    alarm_conf.add('X-WR-ALARMUID', str(uuid.uuid4())) # noqa
-    alarm_conf.add('UID', str(uuid.uuid4()))
-    alarm_conf.add("TRIGGER", timedelta(days=-1))
-    alarm_conf.add("DESCRIPTION", f"{name}{anniversary}周岁生日" if anniversary else f"{name}生日")
-    # alarm_conf.add("TRIGGER", timedelta(days=-2))
-    # alarm_conf.add("TRIGGER;RELATED=START", "PT9H")
-    # alarm_conf.add("TRIGGER;RELATED=START", "-PT{0}M".format(10))
+    # 创建4个闹钟提醒
+    alarm = Alarm()
+    alarm1 = Alarm()
+    alarm2 = Alarm()
+    alarm3 = Alarm()
 
-    event_conf.add_component(alarm_conf)
+    alarm.add('action', 'DISPLAY')
+    alarm.add('trigger', vDatetime(start_date - timedelta(days=6, hours=15)))
+    alarm.add('description', vText('下周{}'.format(description)))
+
+    alarm1.add('action', 'DISPLAY')
+    alarm1.add('trigger', vDatetime(start_date - timedelta(days=1, hours=15)))
+    alarm1.add('description', vText('后天{}'.format(description)))
+
+    alarm2.add('action', 'DISPLAY')
+    alarm2.add('trigger', vDatetime(start_date - timedelta(hours=15)))
+    alarm2.add('description', vText('明天{}'.format(description)))
+
+    alarm3.add('action', 'DISPLAY')
+    alarm3.add('trigger', start_date + timedelta(hours=9))
+    alarm3.add('description', vText('今天{}'.format(description)))
+
+    event_conf.add_component(alarm)
+    event_conf.add_component(alarm1)
+    event_conf.add_component(alarm2)
+    event_conf.add_component(alarm3)
     return event_conf
 
 
 def add_calendar(conf_dict: dict):
     cal = Calendar()
     cal.add('VERSION', '2.0')
-    cal.add('PROID', 'icalendar-rust')  # noqa
-    cal.add('CALSCALE', 'GREGORIAN')  # noqa
-    cal.add('X-WR-CALNAME', conf_dict.get("title"))  # noqa
-    cal.add('X-APPLE-LANGUAGE', 'zh')  # noqa
-    cal.add('X-APPLE-REGION', 'CN')  # noqa
-    # cal.add('X-APPLE-CALENDAR-COLOR', '#708090')
+    cal.add('PROID', '-//My Calendar//caaby.com//')     # noqa
+    cal.add('CALSCALE', 'GREGORIAN')                    # noqa
+    """ GREGORIAN：表示使用公历。
+        其他自定义取值：表示使用其他类型的日历系统。
+    """
+    cal.add('X-WR-CALNAME', conf_dict.get("title"))     # noqa
+    cal.add('X-APPLE-LANGUAGE', 'zh')                   # noqa
+    cal.add('X-APPLE-REGION', 'CN')                     # noqa
     cal.add('X-WR-TIMEZONE', 'Asia/Shanghai')
 
     data_list = conf_dict.get('birthday')
@@ -128,7 +199,7 @@ def add_calendar(conf_dict: dict):
                 day = int(date_parse[1])
 
             start_date = ZhDate(year, month, day).to_datetime()
-            event = add_event_conf(name, start_date, anniversary)
+            event = add_event_conf(name, tz.localize(start_date), anniversary)
             cal.add_component(event)
 
     with open('birthday.ics', 'wb') as f:
