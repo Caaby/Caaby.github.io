@@ -88,7 +88,7 @@ def add_calendar(conf_dict: dict):
                 add_event_conf(name, start_date, anniversary, gregorian=False)
             )
 
-    with open('gift.ics', 'wb') as f:
+    with open('../calendars/gift.ics', 'wb') as f:
         f.write(cal.to_ical())
 
 
