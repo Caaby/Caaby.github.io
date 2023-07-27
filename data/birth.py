@@ -7,6 +7,7 @@ import requests
 import os
 from io import StringIO
 from pytz import timezone
+from oss_update import put_object
 
 """
 BEGIN:VCALENDAR									# 日历开始
@@ -203,8 +204,10 @@ def add_calendar(conf_dict: dict):
             event = add_event_conf(name, tz.localize(start_date), anniversary)
             cal.add_component(event)
 
-    with open('../calendars/birthday.ics', 'wb') as f:
-        f.write(cal.to_ical())
+    put_object("birthday.ics", cal.to_ical())
+    
+    # with open('../calendars/birthday.ics', 'wb') as f:
+    #    f.write(cal.to_ical())
 
 
 if __name__ == '__main__':
