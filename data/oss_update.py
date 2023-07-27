@@ -35,9 +35,8 @@ def put_object(key, data):
     :type data: bytes，str或file-like object
     """
 
-    # 将 x-oss-forbid-overwrite 属性设置为 false，以覆盖已经存在的文件
+    # 将 x-oss-forbid-overwrite 属性设置为 true，不覆盖已经存在的文件
     headers = {
-        'x-oss-forbid-overwrite': 'false',
         'Content-Type': 'text/plain; charset=utf-8',
         'Content-Disposition': "attachment"
     }
