@@ -66,7 +66,7 @@ def add_calendar():
         for m in range(1, 13):
             cal.add_component(add_event_conf(y, m))
 
-    with open('delivery_date.ics', 'wb') as f:
+    with open('../calendars/delivery_date.ics', 'wb') as f:
         f.write(cal.to_ical())
 
 
