@@ -55,8 +55,8 @@ tz = timezone('Asia/Shanghai')
 
 def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf = Event()
-    # event_conf.add('CREATED', vDatetime(datetime.now(tz)))
-    # event_conf.add('LAST-MODIFIED', vDatetime(datetime.now(tz)))
+    event_conf.add('CREATED', vDatetime(datetime.now(tz)))
+    event_conf.add('LAST-MODIFIED', vDatetime(datetime.now(tz)))
     # event_conf.add('LOCATION', vText('Room 101'))
     event_conf.add('dtstamp', vDatetime(datetime.now(tz)))
     """ DTSTAMP 是 icalendar 中一个标准的属性（Property），用于指示事件的创建或最后修改时间。
@@ -146,19 +146,19 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     alarm3 = Alarm()
 
     alarm.add('action', 'DISPLAY')
-    alarm.add('trigger', vDatetime(timedelta(days=-6, hours=-15)))
+    alarm.add('trigger', timedelta(days=-6, hours=-15))
     alarm.add('description', vText('下周{}'.format(description)))
 
     alarm1.add('action', 'DISPLAY')
-    alarm1.add('trigger', vDatetime(timedelta(days=-1, hours=-15)))
+    alarm1.add('trigger', timedelta(days=-1, hours=-15))
     alarm1.add('description', vText('后天{}'.format(description)))
 
     alarm2.add('action', 'DISPLAY')
-    alarm2.add('trigger', vDatetime(timedelta(hours=-15)))
+    alarm2.add('trigger', timedelta(hours=-15))
     alarm2.add('description', vText('明天{}'.format(description)))
 
     alarm3.add('action', 'DISPLAY')
-    alarm3.add('trigger', vDatetime(timedelta(hours=+9)))
+    alarm3.add('trigger', timedelta(hours=+9))
     alarm3.add('description', vText('今天{}'.format(description)))
 
     event_conf.add_component(alarm)
