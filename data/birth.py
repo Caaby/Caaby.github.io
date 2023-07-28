@@ -55,6 +55,9 @@ tz = timezone('Asia/Shanghai')
 
 def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf = Event()
+    event_conf.add('CREATED', vDatetime(datetime(2023, 1, 1, tzinfo=tz)))
+    event_conf.add('LAST-MODIFIED', vDatetime(datetime.now(tz)))
+    # event_conf.add('LOCATION', vText('Room 101'))
     event_conf.add('dtstamp', vDatetime(datetime.now(tz)))
     """ DTSTAMP 是 icalendar 中一个标准的属性（Property），用于指示事件的创建或最后修改时间。
 
