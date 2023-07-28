@@ -55,7 +55,7 @@ tz = timezone('Asia/Shanghai')
 
 def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf = Event()
-    event_conf.add('CREATED', vDatetime(datetime(2023, 1, 1, tzinfo=tz)))
+    event_conf.add('CREATED', vDatetime(datetime.now(tz)))
     event_conf.add('LAST-MODIFIED', vDatetime(datetime.now(tz)))
     # event_conf.add('LOCATION', vText('Room 101'))
     event_conf.add('dtstamp', vDatetime(datetime.now(tz)))
