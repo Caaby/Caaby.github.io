@@ -70,13 +70,13 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf.add('UID', vText(uuid.uuid4()))
     """唯一标识"""
 
-    event_conf.add('dtstart', vDate(start_date))  # noqa
+    event_conf.add('dtstart', vDatetime(start_date))  # noqa
     """开始时间
         vDate 表示日期事件
         vDatetime 表示时间事件
     """
 
-    event_conf.add('dtend', vDate(start_date + timedelta(days=1)))  # noqa
+    event_conf.add('dtend', vDatetime(start_date + timedelta(hours=23)))  # noqa
     """结束时间"""
 
     event_conf.add('class', vText('PRIVATE'))
@@ -91,7 +91,7 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf.add('x-allday', 'TRUE')  # noqa
     """ X-ALLDAY 是 icalendar 中一个非标准的属性（Non-Standard Property），通常用于指示事件是否是全天事件。
         全天事件是一种不需要指定具体时间的事件，通常用于表示整天的节日或假期等。在 icalendar 标准中，全天事件的开始时间和结束时间应该分别设置为当天的起始时间和结束时间。而 X-ALLDAY 属性则可以用于更方便地指示事件是否是全天事件。
-        
+
         该属性表示一个布尔值，用于指示事件是否是全天事件。具体取值及含义如下：
             TRUE：表示事件是全天事件。
             FALSE：表示事件不是全天事件。
@@ -111,13 +111,13 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     """用于指示事件的摘要或标题。
     """
 
-    event_conf.add('TRANSP', vText('OPAQUE')) # noqa
+    event_conf.add('TRANSP', vText('OPAQUE'))  # noqa
     """ 在icalendar标准中，TRANSP是一个事件属性（EventProperty），用于指示事件的可见性，即指示事件是否应该在日历中显示。
-    
+
         TRANSP属性包含以下取值：
             TRANSPARENT：表示事件是透明的，即事件的时间段应该被忽略，不应该在日历中显示。
             这通常用于表示非工作时间或其他不需要显示在日历中的时间段。
-            
+
         OPAQUE：表示事件是不透明的，即事件的时间段应该被显示在日历中。这是TRANSP属性的默认取值。
     """
     description = f"{name}{anniversary}周岁生日" if anniversary else f"{name}生日"  # 详情描述
@@ -146,19 +146,19 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     alarm3 = Alarm()
 
     alarm.add('action', 'DISPLAY')
-    alarm.add('trigger', vDatetime(start_date - timedelta(days=6, hours=15)))
+    alarm.add('trigger', vDatetime(timedelta(days=-6, hours=-15)))
     alarm.add('description', vText('下周{}'.format(description)))
 
     alarm1.add('action', 'DISPLAY')
-    alarm1.add('trigger', vDatetime(start_date - timedelta(days=1, hours=15)))
+    alarm1.add('trigger', vDatetime(timedelta(days=-1, hours=-15)))
     alarm1.add('description', vText('后天{}'.format(description)))
 
     alarm2.add('action', 'DISPLAY')
-    alarm2.add('trigger', vDatetime(start_date - timedelta(hours=15)))
+    alarm2.add('trigger', vDatetime(timedelta(hours=-15)))
     alarm2.add('description', vText('明天{}'.format(description)))
 
     alarm3.add('action', 'DISPLAY')
-    alarm3.add('trigger', vDatetime(start_date + timedelta(hours=9)))
+    alarm3.add('trigger', vDatetime(timedelta(hours=+9)))
     alarm3.add('description', vText('今天{}'.format(description)))
 
     event_conf.add_component(alarm)
@@ -171,14 +171,14 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
 def add_calendar(conf_dict: dict):
     cal = Calendar()
     cal.add('VERSION', '2.0')
-    cal.add('PROID', vText('caaby.com'))                    # noqa
-    cal.add('CALSCALE', vText('GREGORIAN'))                 # noqa
+    cal.add('PROID', vText('caaby.com'))  # noqa
+    cal.add('CALSCALE', vText('GREGORIAN'))  # noqa
     """ GREGORIAN：表示使用公历。
         其他自定义取值：表示使用其他类型的日历系统。
     """
     cal.add('X-WR-CALNAME', vText(conf_dict.get("title")))  # noqa
-    cal.add('X-APPLE-LANGUAGE', vText('zh'))                # noqa
-    cal.add('X-APPLE-REGION', vText('CN'))                  # noqa
+    cal.add('X-APPLE-LANGUAGE', vText('zh'))  # noqa
+    cal.add('X-APPLE-REGION', vText('CN'))  # noqa
     cal.add('X-WR-TIMEZONE', vText('Asia/Shanghai'))
 
     data_list = conf_dict.get('birthday')
@@ -208,7 +208,7 @@ def add_calendar(conf_dict: dict):
             cal.add_component(event)
 
     put_object("birthday.ics", cal.to_ical())
-    
+
     # with open('../calendars/birthday.ics', 'wb') as f:
     #    f.write(cal.to_ical())
 
