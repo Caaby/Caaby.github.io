@@ -1,4 +1,4 @@
-from icalendar import Calendar, Event, Alarm, vDatetime, vDuration, vText
+from icalendar import Calendar, Event, Alarm, vDate,vDatetime, vDuration, vText
 from datetime import datetime, timedelta
 import uuid
 from zhdate import ZhDate
@@ -70,13 +70,13 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf.add('UID', vText(uuid.uuid4()))
     """唯一标识"""
 
-    event_conf.add('dtstart', vDatetime(start_date))  # noqa
+    event_conf.add('dtstart', vDate(start_date))  # noqa
     """开始时间
         vDate 表示日期事件
         vDatetime 表示时间事件
     """
 
-    event_conf.add('dtend', vDatetime(start_date + timedelta(hours=23)))  # noqa
+    event_conf.add('dtend', vDate(start_date + timedelta(days=1)))  # noqa
     """结束时间"""
 
     event_conf.add('class', vText('PRIVATE'))
@@ -140,6 +140,7 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     """
 
     # 创建4个闹钟提醒
+    """
     alarm = Alarm()
     alarm1 = Alarm()
     alarm2 = Alarm()
@@ -165,6 +166,7 @@ def add_event_conf(name, start_date, anniversary):  # 事件函数
     event_conf.add_component(alarm1)
     event_conf.add_component(alarm2)
     event_conf.add_component(alarm3)
+    """
     return event_conf
 
 
