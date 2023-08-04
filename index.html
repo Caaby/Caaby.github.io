@@ -35,11 +35,16 @@
       background-color: #45a049;
     }
     #display-area {
-      height: 100%;
-    }
-    #copy-button {
+        border: 1px solid black;
         position: relative;
-        left: 65%;
+        padding: 10px;
+        height: 20px;
+    } 
+    #copy-button {
+        position: absolute;
+        top: 0;
+        right: 0;
+        border-radius: 0 !important;
     }
     #copy-button:hover {
       background-color: #45a049;
@@ -82,6 +87,7 @@
 
             // 为 button 元素添加 id 属性
             copyBtn.setAttribute("id", "copy-button");
+            // copyBtn.style.border= "1px solid black";
 
             copyBtn.addEventListener("click", () => {
                 const success = navigator.clipboard.writeText(data);
@@ -111,6 +117,8 @@
                 );
             // 将 button 元素添加为 div 的子元素
 		    myDiv.appendChild(copyBtn);
+            
+
             })
     .catch(error => {
         console.log(error)
