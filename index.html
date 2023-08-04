@@ -1,98 +1,122 @@
 <!DOCTYPE html>
-<html lang="zh-cn">
+<html>
 <head>
-     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta charset="utf-8">
-    <title>解析</title> 
-<style>
-.button {
-  background: #3498db;
-  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
-  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
-  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
-  background-image: -o-linear-gradient(top, #3498db, #2980b9);
-  background-image: linear-gradient(to bottom, #3498db, #2980b9);
-  -webkit-border-radius: 28;
-  -moz-border-radius: 28;
-  border-radius: 28px;
-  font-family: Arial;
-  color: #ffffff;
-  font-size: 19px;
-  width: 120px;
-  padding: 12px 30px 12px 30px;
-  text-decoration: none;
-}
-
-.button:hover {
-  background: #2980b9;
-  background-image: -webkit-linear-gradient(top, #2980b9, #3498db);
-  background-image: -moz-linear-gradient(top, #2980b9, #3498db);
-  background-image: -ms-linear-gradient(top, #2980b9, #3498db);
-  background-image: -o-linear-gradient(top, #2980b9, #3498db);
-  background-image: linear-gradient(to bottom, #2980b9, #3498db);
-  color: #ffffff;
-  text-decoration: none;
-}
-  input{
-    outline-style: none ;
-    border: 1px solid #ccc; 
-    border-radius: 3px;
-    padding: 13px 14px;
-    width: 620px;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: "Microsoft soft";
-}
-
-</style>
-<head>
+  <title>raw.caaby.com</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      width: 100%;
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    .button {
+      width: 30%;
+      padding: 10px;
+      background-color: #8d9e8e;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      display: inline-block;
+    }
+    .button:hover {
+      background-color: #45a049;
+    }
+    #display-area {
+      height: 100px;
+    }
+    #copy-button {
+        position: relative;
+        left: 65%;
+    }
+    #copy-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
 <body>
+  <div class="container">
+    <input type="text" class="input-field" id="key" placeholder="Enter key">
+    <input type="text" class="input-field" id="value" placeholder="Enter value">
+    <button class="button" onclick="convertUrl()">转换</button>
+    <div id="display-area">
+    </div>
+  </div>
+  <script>
+    function convertUrl() {
+        const key = document.getElementById("key").value;
+        const value = document.getElementById("value").value;
+        const url = `https://raw.caaby.com/${key}`;
+        
+        fetch(url, {
+            method: "PUT",
+            headers: {"Content-Type": "text/plain"},
+            body: value
+            })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+           
+            let myDiv = document.getElementById("display-area");
+		    // 创建一个文本节点
+		    let textNode = document.createTextNode(data);
+		    // 将文本节点添加为 div 的子元素
+		    myDiv.appendChild(textNode);
+		    // 创建一个 button 元素
+		    let copyBtn = document.createElement("button");
+		    // 添加一个文本节点到 button 元素
+		    let buttonTextNode = document.createTextNode("copy");
+		    copyBtn.appendChild(buttonTextNode);
 
- <p><span class="search-timer">
-     <font id="divT"></font>
-    </span></p>
-</br>
-</br>
-<input class="input" type="text" value="" id="textId" placeholder="请输入链接">
-<input class="button" type="button"  value="解析" onclick="javascript: void vv();">
+            // 为 button 元素添加 id 属性
+            copyBtn.setAttribute("id", "copy-button");
 
-
-<script language="javascript">
-    function vv() {
-    var str =   document.getElementById("textId").value 
-    window.location.href = "https://jx.200jx.com/?url="+str;
-  }
-
-  function getCurDate()
-        {
-         var d = new Date();
-         var week;
-         switch (d.getDay()){
-         case 1: week="星期一"; break;
-         case 2: week="星期二"; break;
-         case 3: week="星期三"; break;
-         case 4: week="星期四"; break;
-         case 5: week="星期五"; break;
-         case 6: week="星期六"; break;
-         default: week="星期天";
-         }
-         var years = d.getFullYear();
-         var month = add_zero(d.getMonth()+1);
-         var days = add_zero(d.getDate());
-         var hours = add_zero(d.getHours());
-         var minutes = add_zero(d.getMinutes());
-         var seconds=add_zero(d.getSeconds());
-         var ndate = years+"年"+month+"月"+days+"日 "+hours+":"+minutes+":"+seconds+" ";
-         var divT=document.getElementById("divT");
-         divT.innerHTML= ndate;
-        }
-        function add_zero(temp)
-        {
-         if(temp<10) return "0"+temp;
-         else return temp;
-        }
-        setInterval("getCurDate()",100);
-
-</script>
+            copyBtn.addEventListener("click", () => {
+                const success = navigator.clipboard.writeText(data);
+                let tooltip = document.createElement("div");
+                tooltip.textContent = "复制成功";
+                tooltip.style.position = "fixed";
+                tooltip.style.top = "50%";
+                tooltip.style.left = "50%";
+                tooltip.style.transform = "translate(-50%, -50%)";
+                tooltip.style.padding = "10px";
+                tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.8)";
+                tooltip.style.color = "#fff";
+                tooltip.style.zIndex = "9999";
+                if (success) {
+                    tooltip.textContent = "复制成功";
+                    // alert("复制成功");
+                } else {
+                    tooltip.textContent = "复制成功";
+                }
+                // 将提示元素添加到body中
+                document.body.appendChild(tooltip);
+                // 2秒后销毁提示元素
+                setTimeout(function() {
+                    tooltip.parentNode.removeChild(tooltip);
+                    }, 2000);
+                }
+                );
+            // 将 button 元素添加为 div 的子元素
+		    myDiv.appendChild(copyBtn);
+            })
+    .catch(error => {
+        console.log(error)
+        document.getElementById("display-area").innerHTML = "请求失败";
+    });
+}
+  </script>
 </body>
 </html>
